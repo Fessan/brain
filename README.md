@@ -1100,4 +1100,4 @@ sudo systemctl list-timers
 
 ---
 
-*Made with 🧠 by [@smixs](https://t.me/shimaoz)*
+*Made with 🧠 by [@serge shima](https://t.me/shimaoz)*
