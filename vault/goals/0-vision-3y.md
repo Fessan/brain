@@ -1,16 +1,15 @@
 ---
 type: vision
 horizon: 3-years
-period: 2025-2027
-updated: YYYY-MM-DD
+period: 2026-2028
+updated: 2026-01-30
 ---
 
-# Vision 2025-2027
+# Vision 2026-2028
 
 ## Life Mission
 
-<!-- Your life direction in one sentence -->
-<!-- Example: "Build meaningful technology while maintaining balance across health, relationships, and personal growth." -->
+Строю устойчивую карьеру в ИИ, сохраняя здоровье и близость в семье.
 
 ---
 
@@ -19,60 +18,60 @@ updated: YYYY-MM-DD
 ### Career & Business
 
 **3-Year Vision:**
-<!-- Where do you want to be professionally in 3 years? -->
+Работаю в IT-компании, активно использую ИИ в работе. ЗП позволяет не думать о проблемах, кредитах, ипотеке.
 
 **Key Milestones:**
-- [ ] Milestone 1
-- [ ] Milestone 2
-- [ ] Milestone 3
+- [ ] Уверенная роль с ИИ-компетенцией
+- [ ] Регулярное применение ИИ в рабочих процессах
+- [ ] Финансовая стабильность
 
 ---
 
 ### Health & Energy
 
 **3-Year Vision:**
-<!-- What does your ideal health look like? -->
+Здоров, регулярно тренируюсь, без болей, стабильная энергия.
 
 **Key Milestones:**
-- [ ] Milestone 1
-- [ ] Milestone 2
-- [ ] Milestone 3
+- [ ] Регулярные тренировки как норма
+- [ ] Энергия стабильна в течение дня
+- [ ] Отсутствие хронических болей
 
 ---
 
 ### Relationships & Family
 
 **3-Year Vision:**
-<!-- How do you want your relationships to evolve? -->
+Глубже чувствую и поддерживаю Женю и детей, больше теплых совместных моментов.
 
 **Key Milestones:**
-- [ ] Milestone 1
-- [ ] Milestone 2
-- [ ] Milestone 3
+- [ ] Регулярные совместные активности
+- [ ] Осознанное время без отвлечений
+- [ ] Открытая поддерживающая коммуникация
 
 ---
 
 ### Personal Growth
 
 **3-Year Vision:**
-<!-- What skills, habits, or mindset changes do you want? -->
+Смелее проявляюсь, реализую желания, спокойно выхожу в публичность.
 
 **Key Milestones:**
-- [ ] Milestone 1
-- [ ] Milestone 2
-- [ ] Milestone 3
+- [ ] Регулярные публичные проявления
+- [ ] Привычка действовать без излишних сомнений
+- [ ] Поддерживающие практики (медитации/випассана)
 
 ---
 
 ### Financial
 
 **3-Year Vision:**
-<!-- What does financial security look like for you? -->
+Ипотека почти закрыта, есть подушка на 6 месяцев и доход не только с ЗП, но и с пет-проектов.
 
 **Key Milestones:**
-- [ ] Milestone 1
-- [ ] Milestone 2
-- [ ] Milestone 3
+- [ ] Подушка на 6 месяцев
+- [ ] Доход от пет-проектов
+- [ ] Ипотека закрыта на 80%+
 
 ---
 
@@ -99,10 +98,10 @@ updated: YYYY-MM-DD
 
 ## Links
 
-- [[1-yearly-2025]] - This year's goals
+- [[1-yearly-2026]] - This year's goals
 - [[2-monthly]] - Current month focus
 - [[3-weekly]] - This week's plan
 
 ---
 
-*Next Review: Q1 2025*
+*Next Review: Q1 2026*

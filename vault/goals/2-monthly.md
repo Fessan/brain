@@ -1,50 +1,50 @@
 ---
 type: monthly
-period: YYYY-MM
-updated: YYYY-MM-DD
+period: 2026-02
+updated: 2026-01-30
 ---
 
 # Monthly Focus
 
 ## Top 3 Priorities
 
-### Priority 1: [Your Top Priority]
+### Priority 1: Регулярный спорт и восстановление
 <!-- What MUST happen this month? -->
 
-**Why it matters:** [connection to yearly goal]
+**Why it matters:** здоровье и энергия (системная база)
 
 **Key Actions:**
-- [ ] Action 1
-- [ ] Action 2
-- [ ] Action 3
+- [ ] Зал 2–3 раза в неделю
+- [ ] Тренировки «Черного отряда»
+- [ ] Випассана по воскресеньям
 
-**Definition of Done:** [clear outcome]
+**Definition of Done:** 8+ тренировок за месяц и все воскресные сессии
 
 ---
 
-### Priority 2: [Second Priority]
+### Priority 2: Развитие в ИИ
 
-**Why it matters:** [connection to yearly goal]
+**Why it matters:** рост экспертизы и подготовка к новым возможностям
 
 **Key Actions:**
-- [ ] Action 1
-- [ ] Action 2
-- [ ] Action 3
+- [ ] 3–4 занятия в неделю (курс/статья/практика)
+- [ ] Один маленький пет‑проект/прототип
+- [ ] Вести заметки и выводы в vault
 
-**Definition of Done:** [clear outcome]
+**Definition of Done:** 1 прототип + 8+ часов практики
 
 ---
 
-### Priority 3: [Third Priority]
+### Priority 3: Подготовка к смене работы
 
-**Why it matters:** [connection to yearly goal]
+**Why it matters:** рост ЗП и карьерный переход
 
 **Key Actions:**
-- [ ] Action 1
-- [ ] Action 2
-- [ ] Action 3
+- [ ] Обновить резюме
+- [ ] Собрать портфолио (2–3 кейса)
+- [ ] Сделать первые 5–10 откликов/разговоров
 
-**Definition of Done:** [clear outcome]
+**Definition of Done:** резюме готово + минимум 5 откликов
 
 ---
 
@@ -87,7 +87,7 @@ updated: YYYY-MM-DD
 ## Links
 
 - [[0-vision-3y]] - 3-year vision
-- [[1-yearly-2025]] - Annual goals
+- [[1-yearly-2026]] - Annual goals
 - [[3-weekly]] - This week's plan
 
 ---

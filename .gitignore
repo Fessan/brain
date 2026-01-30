@@ -17,6 +17,9 @@ node_modules/
 # MCP bundles
 .mcp/
 
+# Docker auth caches
+.docker/
+
 # IDE
 .idea/
 .vscode/

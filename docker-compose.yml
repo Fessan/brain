@@ -1,0 +1,14 @@
+version: "3.8"
+
+services:
+  d-brain:
+    build: .
+    env_file:
+      - .env
+    environment:
+      VAULT_PATH: /app/vault
+    volumes:
+      - ./vault:/app/vault
+      - ./.docker/codex:/root/.codex
+      - ./.docker/claude:/root/.config/claude
+    restart: unless-stopped

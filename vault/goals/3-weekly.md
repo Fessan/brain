@@ -1,7 +1,7 @@
 ---
 type: weekly
-week: YYYY-WWW
-updated: YYYY-MM-DD
+week: 2026-W05
+updated: 2026-01-30
 ---
 
 # Weekly Focus
@@ -9,7 +9,7 @@ updated: YYYY-MM-DD
 ## ONE Big Thing
 
 > **If I accomplish nothing else, I will:**
-> [Single most important outcome for this week]
+> Разобраться с Сергеем Шимой по его ТЗ
 
 <!-- This is read by the bot during daily processing -->
 
@@ -17,7 +17,7 @@ updated: YYYY-MM-DD
 
 ## Week at a Glance
 
-**Week:** [X] of 52
+**Week:** 5 of 52
 **Energy Level:** [High/Medium/Low]
 **Available Hours:** [X] hours focused work
 
@@ -27,7 +27,7 @@ updated: YYYY-MM-DD
 
 ### Must Do (Non-negotiable)
 
-- [ ] Task 1 — Связь: [[1-yearly-2025#Goal]]
+- [ ] Task 1 — Связь: [[1-yearly-2026#Goal]]
 - [ ] Task 2
 - [ ] Task 3
 
@@ -119,7 +119,7 @@ updated: YYYY-MM-DD
 ## Links
 
 - [[2-monthly]] - Monthly priorities
-- [[1-yearly-2025]] - Yearly goals
+- [[1-yearly-2026]] - Yearly goals
 - Previous: [[3-weekly-YYYY-WXX]]
 
 ---

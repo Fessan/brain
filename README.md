@@ -342,7 +342,7 @@ VS Code скачал проект на ваш компьютер и открыл
 В левой части VS Code найдите папку `vault`, нажмите на стрелочку слева от неё, чтобы раскрыть. Внутри найдите папку `goals`. В ней лежат 4 файла:
 
 - `0-vision-3y.md` — видение на 3 года
-- `1-yearly-2025.md` — цели на год
+- `1-yearly-2026.md` — цели на год
 - `2-monthly.md` — приоритеты на месяц
 - `3-weekly.md` — фокус на неделю
 
@@ -383,10 +383,10 @@ VS Code скачал проект на ваш компьютер и открыл
 
 Промпты для них:
 
-**Для `1-yearly-2025.md`:**
+**Для `1-yearly-2026.md`:**
 ```
 Это шаблон годовых целей. На основе моего 3-летнего видения
-помоги поставить цели на 2025 год. Задавай вопросы по одному.
+помоги поставить цели на 2026 год. Задавай вопросы по одному.
 ```
 
 **Для `2-monthly.md`:**
@@ -772,6 +772,42 @@ cd ~
 git clone https://github.com/ВАШ_ЛОГИН/agent-second-brain.git
 cd agent-second-brain
 bash setup.sh
+```
+
+---
+
+## Docker (опционально)
+
+Если хотите запускать бота в контейнере:
+
+1) Установите Docker и Docker Compose
+2) Создайте `.env` по шаблону `.env.example`
+3) Положите `singularity-mcp-server-2.0.1.mcpb` рядом с `Dockerfile` (иначе MCP не поднимется)
+4) Создайте папки для OAuth сессий:
+
+```bash
+mkdir -p .docker/codex .docker/claude
+```
+
+Запуск:
+
+```bash
+docker compose up -d --build
+```
+
+Остановка:
+
+```bash
+docker compose down
+```
+
+**Codex авторизация в Docker (OAuth):**
+- Выполните `docker compose exec d-brain codex login`
+
+**Claude авторизация (OAuth, опционально):**
+
+```bash
+docker compose exec d-brain claude auth login
 ```
 
 ---

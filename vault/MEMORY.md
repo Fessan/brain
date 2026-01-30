@@ -6,27 +6,27 @@ Curated knowledge that persists across sessions. Layer 2 of Clawdbot memory arch
 
 | Field | Value |
 |-------|-------|
-| Name | [Your name] |
-| Timezone | [Your timezone, e.g., UTC+5] |
-| Location | [City/Country] |
-| Primary language | [e.g., Russian/English] |
+| Name | Саша |
+| Timezone | UTC+7 |
+| Location | Томск, Россия |
+| Primary language | Russian |
 
 ## Preferences
 
 ### Tech Stack
-- Languages: [e.g., Python, TypeScript]
-- Frameworks: [e.g., React, FastAPI]
-- Tools: [e.g., Cursor, Claude Code]
+- Languages: [e.g., Python]
+- Frameworks: [e.g., FastAPI]
+- Tools: Codex, Claude, Cursor, OpenCode
 
 ### Communication Style
-- Preferred response language: [Russian/English/Mixed]
-- Detail level: [Brief/Detailed]
-- Code comments: [Minimal/Verbose]
+- Preferred response language: Russian
+- Detail level: Brief
+- Code comments: Minimal
 
 ### Habits
 - Morning routine: [if relevant]
 - Work hours: [e.g., 10:00-19:00]
-- Planning cadence: [weekly/daily]
+- Planning cadence: weekly/daily
 
 ## Key Decisions
 
@@ -38,7 +38,7 @@ Curated knowledge that persists across sessions. Layer 2 of Clawdbot memory arch
 
 ### ONE Big Thing (This Week)
 <!-- From goals/3-weekly.md -->
-- [ ] [Current week's main focus]
+- [ ] Разобраться с Сергеем Шимой по его ТЗ
 
 ### Hot Projects
 1. [Project name] — [status/next action]

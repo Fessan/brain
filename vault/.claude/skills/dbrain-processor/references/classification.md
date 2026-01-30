@@ -20,7 +20,7 @@ Based on user's work context (see [ABOUT.md](ABOUT.md)):
 Брифы, стратегии, креатив, кампании, KPI, предложения
 
 <!-- Добавьте имена ваших клиентов через запятую -->
-**Keywords:** [Your Client Names], клиент, бриф, презентация, дедлайн, KPI
+**Keywords:** МЮЗ, Твой Дом, клиент, бриф, презентация, дедлайн, KPI
 
 **→ Category:** task (priority 0-1) → Singularity
 
@@ -42,7 +42,7 @@ Based on user's work context (see [ABOUT.md](ABOUT.md)):
 Команда, процессы, автоматизация, найм, управление, финансы
 
 <!-- Замените [Your Company] на название вашей компании/проекта -->
-**Keywords:** команда, найм, процесс, HR, финансы, [Your Company]
+**Keywords:** команда, найм, процесс, HR, финансы, Инттаро
 
 **→ Category:** task или project (depends on urgency)
 
@@ -50,7 +50,7 @@ Based on user's work context (see [ABOUT.md](ABOUT.md)):
 Посты, идеи, тезисы для Telegram и LinkedIn
 
 <!-- Замените [@your_channel] на ваш Telegram-канал или удалите если не нужно -->
-**Keywords:** пост, [@your_channel], LinkedIn, контент, тезис, статья
+**Keywords:** пост, @stoic_pm, LinkedIn, контент, тезис, статья
 
 **→ Category:** idea → thoughts/ideas/ или task если с дедлайном
 

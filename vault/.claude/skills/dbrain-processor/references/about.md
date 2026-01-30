@@ -19,25 +19,26 @@
 
 ## Core Identity
 
-**[Your Name], [Age]** — [Your Role/Position]
+**Саша** — руководитель проектов в IT-компании
 
-- [Your company/occupation]
-- [Key clients or projects]
-- [Years of experience]
-- [Primary role description]
+- Компания: Инттаро
+- Ключевые клиенты/проекты: МЮЗ, Твой Дом
+- Опыт: 5 лет
+- Роль: руковожу командами разработки, сейчас сопровождение интернет-магазинов
 
 ## Primary Operating Mode
 
-- [How you think and work]
-- [Your decision-making style]
-- [What you value in work]
-- [Communication preferences]
+- Работаю быстро, люблю оперативку
+- Иногда вдумчиво решаю сложные вопросы (редко)
+- Ценю лаконичность и четкость
+- Не люблю возиться с документацией и финансами
+- Коммуникации обычные, хорошо чувствую людей даже по переписке
 
 ## Strategic Focus
 
-1. [Primary goal]
-2. [Secondary goal]
-3. [Third goal]
+1. Поднять ЗП
+2. Развиваться в ИИ
+3. Получить первые деньги за ИИ и пет-проекты
 
 ## Work Domains
 
@@ -45,39 +46,40 @@ Key contexts for classifying notes:
 
 | Domain | Examples |
 |--------|----------|
-| **Work** | projects, tasks, meetings, deadlines |
-| **Learning** | courses, books, insights, skills |
-| **Ideas** | product ideas, improvements, innovations |
-| **Personal** | health, family, hobbies, routines |
+| **Work** | Инттаро, Redmine, задачи, проекты, дедлайны, встречи |
+| **AI & Tech** | OpenAI, Claude, Cursor, OpenCode, Нейроцех |
+| **Personal** | здоровье, семья, быт, личные дела |
+| **Ideas** | продуктовые идеи, гипотезы, улучшения, новые фичи |
+| **Learning** | книги, курсы, вебинары, навыки ("Процесс присутствия", "Спотыкаясь об счастье", Нейроцех) |
 
 ## Personal Context
 
-- Family: [situation]
-- Interests: [hobbies]
-- Work style: [morning person, etc.]
-- Languages: [languages you use]
+- Family: жена Женя, две дочки — Алис (9 лет) и Лера (13 лет)
+- Interests: ИИ, книги, игры, саморазвитие, медитации, випасса
+- Work style: быстрый темп, операционка
+- Languages: русский
 
 ## Goals Hierarchy
 
-1. [Primary life goal]
-2. [Secondary goal]
-3. [Third goal]
-4. [Fourth goal]
+1. Закрыть ипотеку
+2. Поменять работу
+3. Развиться в ИИ
+4. Регулярно ходить в тренажерный зал
 
 ## Decision Filters
 
 When evaluating ideas and tasks:
-- [Question 1]
-- [Question 2]
-- [Question 3]
-- [Question 4]
+- Это приближает к смене работы или росту ЗП?
+- Это развивает ИИ-навыки или дает портфолио/доход от ИИ?
+- Это улучшает здоровье/энергию?
+- Это обязательство с дедлайном/людьми, где нельзя сорвать?
 
 ## Notes Processing Preferences
 
 ### Language and Style
-- [Your language preferences]
-- [Terminology preferences]
-- [Formatting preferences]
+- Язык: русский
+- Терминология: простая, без канцелярита
+- Форматирование: лаконично, без воды
 
 ### Structure
 Preferred format:
@@ -86,8 +88,8 @@ Context → Insight → Implication → Next Action
 ```
 
 ### Prioritization
-- **Urgent**: [what counts as urgent] → priority 0-1
-- **Strategic**: [what counts as strategic] → priority 1-2
+- **Urgent**: всё, что связано с семьей → priority 0-1
+- **Strategic**: задачи "на подумать" → priority 1-2
 
 ## Anti-Patterns (AVOID)
 
