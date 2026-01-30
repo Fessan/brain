@@ -77,10 +77,10 @@ Count saved, list with category emoji:
 
 ### Tasks (✅)
 Count created, list with priority and due date.
-Format: • Task name <i>(p2, friday)</i>
+Format: • Task name <i>(priority 1, YYYY-MM-DD)</i>
 
 ### Week Load (📅)
-Call find-tasks-by-date for 7 days.
+Call listTasks with startDateFrom/startDateTo for 7 days.
 Format: Пн: 4 | Вт: 2 | ...
 
 ### Attention (⚠️)
@@ -92,7 +92,7 @@ Show only if new links created.
 Format: • [[Note A]] ↔ [[Note B]]
 
 ### Priorities (⚡)
-Get tomorrow's tasks from Todoist, sort by priority, show top 3.
+Get tomorrow's tasks from Singularity, sort by priority, show top 3.
 
 ### Goals Progress (📈)
 Read goals/1-yearly-2026.md, show goals with recent activity.

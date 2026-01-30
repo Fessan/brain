@@ -22,7 +22,7 @@ Based on user's work context (see [ABOUT.md](ABOUT.md)):
 <!-- Добавьте имена ваших клиентов через запятую -->
 **Keywords:** [Your Client Names], клиент, бриф, презентация, дедлайн, KPI
 
-**→ Category:** task (p1-p2) → Todoist
+**→ Category:** task (priority 0-1) → Singularity
 
 ### AI & Tech
 Инструменты, модели, промпты, пайплайны, агенты
@@ -61,10 +61,10 @@ Based on user's work context (see [ABOUT.md](ABOUT.md)):
 ```
 Entry text contains...
 │
-├─ Client brand or deadline? ────────────────────> TASK (p1-p2)
+├─ Client brand or deadline? ────────────────────> TASK (priority 0-1)
 │  ([Your Clients], клиент, дедлайн, презентация)
 │
-├─ Operational/urgent? ──────────────────────────> TASK (p2-p3)
+├─ Operational/urgent? ──────────────────────────> TASK (priority 1-2)
 │  (нужно сделать, не забыть, позвонить, встреча)
 │
 ├─ AI/tech learning? ────────────────────────────> LEARNING
@@ -112,9 +112,9 @@ For `[photo]` entries:
 
 | Category | Destination | Priority |
 |----------|-------------|----------|
-| task (client) | Todoist | p1-p2 |
-| task (ops) | Todoist | p2-p3 |
-| task (content) | Todoist | p3-p4 |
+| task (client) | Singularity | 0-1 |
+| task (ops) | Singularity | 1 |
+| task (content) | Singularity | 1-2 |
 | idea | thoughts/ideas/ | — |
 | reflection | thoughts/reflections/ | — |
 | project | thoughts/projects/ | — |

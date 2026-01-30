@@ -11,7 +11,8 @@ from aiogram.types import Message
 from d_brain.bot.formatters import format_process_report
 from d_brain.config import get_settings
 from d_brain.services.git import VaultGit
-from d_brain.services.processor import ClaudeProcessor
+from d_brain.services.llm_router import get_provider
+from d_brain.services.processor import LLMProcessor
 
 router = Router(name="process")
 logger = logging.getLogger(__name__)
@@ -26,7 +27,13 @@ async def cmd_process(message: Message) -> None:
     status_msg = await message.answer("⏳ Processing... (may take up to 10 min)")
 
     settings = get_settings()
-    processor = ClaudeProcessor(settings.vault_path, settings.todoist_api_key)
+    user_id = message.from_user.id if message.from_user else None
+    provider = get_provider(user_id)
+    processor = LLMProcessor(
+        settings.vault_path,
+        settings.singularity_access_token,
+        provider,
+    )
     git = VaultGit(settings.vault_path)
 
     # Run subprocess in thread to avoid blocking event loop

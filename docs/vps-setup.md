@@ -110,7 +110,7 @@ uv --version
 
 ## Step 7: Install Node.js
 
-Required for MCP servers (Todoist integration):
+Required for MCP servers (Singularity integration):
 
 ```bash
 curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
@@ -123,7 +123,29 @@ npm --version
 
 ---
 
-## Step 8: Install Claude CLI
+## Step 8: Install Codex CLI (default)
+
+```bash
+npm install -g @openai/codex
+
+# Verify
+which codex
+codex --version
+
+# Authenticate
+codex login
+```
+
+After `codex login`:
+1. A URL appears
+2. Copy and open it in browser on your computer
+3. Log in to OpenAI account
+4. Authorize access
+5. Return to terminal — it will confirm
+
+---
+
+## Step 8.1: Install Claude CLI (optional)
 
 ```bash
 npm install -g @anthropic-ai/claude-code
@@ -135,13 +157,6 @@ claude --version
 # Authenticate
 claude auth login
 ```
-
-After `claude auth login`:
-1. A URL appears
-2. Copy and open it in browser on your computer
-3. Log in to Anthropic account
-4. Authorize access
-5. Return to terminal — it will confirm
 
 ---
 
@@ -194,11 +209,12 @@ uv run python -c "import aiogram; print('aiogram OK')"
 3. Settings → API Keys
 4. Create key and copy
 
-### Todoist API Token (optional)
+### Singularity API Token (Pro/Elite)
 
-1. Go to https://todoist.com/
-2. Settings → Integrations → Developer
-3. Copy API token
+1. Go to https://me.singularity-app.com/
+2. Open API Access (REST tokens)
+3. Create a token with tasks/projects permissions
+4. Copy the token (shown once)
 
 ---
 
@@ -213,7 +229,7 @@ Paste (replace with your values):
 ```bash
 TELEGRAM_BOT_TOKEN=7123456789:AAHdN8J2K4m5N6o7P8q9R0s1T2u3V4w5X6y
 DEEPGRAM_API_KEY=a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0
-TODOIST_API_KEY=
+SINGULARITY_ACCESS_TOKEN=
 VAULT_PATH=./vault
 ALLOWED_USER_IDS=[123456789]
 ```
@@ -476,11 +492,11 @@ claude auth status
 claude auth login  # if needed
 ```
 
-### Todoist not working
+### Singularity not working
 
 ```bash
-cat ~/projects/agent-second-brain/.env | grep TODOIST
-mcp-cli call todoist find-tasks-by-date '{"startDate": "today"}'
+cat ~/projects/agent-second-brain/.env | grep SINGULARITY
+mcp-cli call singularity listTasks '{"startDateFrom": "2026-01-01", "startDateTo": "2026-01-07"}'
 ```
 
 ### Permission errors

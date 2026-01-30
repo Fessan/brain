@@ -41,10 +41,10 @@ If task aligns with goals, consider priority bump:
 
 | Alignment | Default | Boost to |
 |-----------|---------|----------|
-| ONE Big Thing | p3 | p2 |
-| Monthly priority | p3 | p2-p3 |
-| Yearly goal | p4 | p3 |
-| No alignment | p4 | p4 |
+| ONE Big Thing | 1 | 0 |
+| Monthly priority | 1 | 0 |
+| Yearly goal | 2 | 1 |
+| No alignment | 2 | 2 |
 
 ## Saving Thoughts
 
@@ -131,5 +131,5 @@ Result:
 ```
 Task: Подготовить презентацию для клиента X
 Description: → Monthly: Client deliverables → Goal: Client Revenue
-Priority: p2 (boosted from p3)
+Priority: 1 (boosted from 2)
 ```

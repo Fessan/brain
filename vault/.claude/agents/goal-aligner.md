@@ -1,6 +1,6 @@
 ---
 name: goal-aligner
-description: Check alignment between tasks in Todoist and goals in vault. Find orphan tasks and stale goals.
+description: Check alignment between tasks in Singularity and goals in vault. Find orphan tasks and stale goals.
 ---
 
 # Goal Aligner Agent
@@ -29,9 +29,9 @@ Extract goal keywords for matching.
 ### Step 2: Get All Active Tasks
 
 ```
-mcp__todoist__find-tasks
-  responsibleUserFiltering: "all"
-  limit: 100
+mcp__singularity__listTasks
+  includeArchived: false
+  maxCount: 200
 ```
 
 ### Step 3: Analyze Alignment

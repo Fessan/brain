@@ -21,12 +21,12 @@ Analyzes the past week and generates comprehensive digest report.
    daily/YYYY-MM-DD.md (7 files)
    ```
 
-2. **Get completed tasks from Todoist:**
-   ```
-   mcp__todoist__find-completed-tasks
-     since: {monday}
-     until: {sunday}
-   ```
+2. **Get tasks from Singularity for the week:**
+    ```
+    mcp__singularity__listTasks
+      startDateFrom: {monday}
+      startDateTo: {sunday}
+    ```
 
 3. **Get current goals:**
    ```

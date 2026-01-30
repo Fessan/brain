@@ -5,6 +5,7 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types import Message
 
 from d_brain.bot.states import DoCommandState
+from d_brain.services.llm_router import LLMProvider, toggle_provider
 
 router = Router(name="buttons")
 
@@ -41,6 +42,15 @@ async def btn_do(message: Message, state: FSMContext) -> None:
         "🎯 <b>Что сделать?</b>\n\n"
         "Отправь голосовое или текстовое сообщение с запросом."
     )
+
+
+@router.message(F.text == "🤖 Claude")
+async def btn_model_toggle(message: Message) -> None:
+    """Toggle LLM provider between Codex and Claude."""
+    user_id = message.from_user.id if message.from_user else None
+    provider = toggle_provider(user_id)
+    label = "Claude" if provider == LLMProvider.CLAUDE else "Codex"
+    await message.answer(f"🤖 Активная модель: <b>{label}</b>")
 
 
 @router.message(F.text == "❓ Помощь")

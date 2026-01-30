@@ -12,22 +12,22 @@ Check AFTER each `## HH:MM` header for the marker.
 
 ## Rule 2: Every Task = Date
 
-**NEVER create a task without `dueString`:**
+**NEVER create a task without `start`:**
 
-| Text | dueString |
+| Text | start |
 |------|-----------|
-| завтра | tomorrow |
-| в пятницу | friday |
-| на этой неделе | friday |
-| в четверг | thursday |
-| 15 января | January 15 |
-| NOT SPECIFIED | in 3 days |
+| завтра | YYYY-MM-DD (tomorrow) |
+| в пятницу | YYYY-MM-DD (this Friday) |
+| на этой неделе | YYYY-MM-DD (this Friday) |
+| в четверг | YYYY-MM-DD (this Thursday) |
+| 15 января | YYYY-01-15 |
+| NOT SPECIFIED | YYYY-MM-DD (+3 days) |
 
 ## Rule 3: Check Duplicates
 
 **BEFORE creating any task:**
 
-1. Call `find-tasks` with key words from task
+1. Call `listTasks` for recent dates and compare titles
 2. If similar task exists → **DO NOT CREATE**
 3. Mark as: `<!-- ✓ processed: task (duplicate) -->`
 
@@ -35,7 +35,7 @@ Check AFTER each `## HH:MM` header for the marker.
 
 **BEFORE creating tasks:**
 
-1. Call `find-tasks-by-date` with `startDate: "today"`, `daysCount: 7`
+1. Call `listTasks` with `startDateFrom`/`startDateTo` for 7 days
 2. Count tasks per day
 3. If target day has 3+ tasks → shift to next day with less load
 
@@ -49,7 +49,7 @@ After EACH processed entry, add marker:
 
 For tasks with details:
 ```markdown
-<!-- ✓ processed: task → Todoist: {name} {priority} {date} -->
+<!-- ✓ processed: task → Singularity: {name} {priority} {date} -->
 ```
 
 ## Rule 6: Apply Decision Filters
@@ -77,7 +77,7 @@ See [ABOUT.md](ABOUT.md) → Anti-Patterns section.
 ## Checklist Before Completion
 
 - [ ] All new entries processed
-- [ ] No duplicates in Todoist
+- [ ] No duplicates in Singularity
 - [ ] All tasks have dates and concrete actions
 - [ ] Decision filters applied
 - [ ] Anti-patterns avoided

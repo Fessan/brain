@@ -102,10 +102,10 @@ validate_deepgram_key() {
     return 1
 }
 
-validate_todoist_key() {
+validate_singularity_token() {
     local key="$1"
-    # Todoist API token is alphanumeric, 40 chars
-    if [[ $key =~ ^[A-Za-z0-9]+$ ]] && [ ${#key} -ge 30 ]; then
+    # Singularity token is UUID-like
+    if [[ $key =~ ^[0-9a-fA-F-]{36}$ ]]; then
         return 0
     fi
     return 1
@@ -152,7 +152,7 @@ install_system_deps() {
     sudo apt-get update -qq
 
     info "Installing git, curl, wget, build-essential..."
-    sudo apt-get install -y -qq git curl wget build-essential software-properties-common
+    sudo apt-get install -y -qq git curl wget unzip build-essential software-properties-common
 
     success "System dependencies installed"
 }
@@ -215,6 +215,20 @@ install_nodejs() {
     sudo apt-get install -y -qq nodejs
 
     success "Node.js $(node --version) installed"
+}
+
+install_codex_cli() {
+    step "Installing Codex CLI"
+
+    if check_command codex; then
+        success "Codex CLI already installed: $(codex --version 2>/dev/null || echo 'version unknown')"
+        return
+    fi
+
+    info "Installing @openai/codex globally..."
+    sudo npm install -g @openai/codex
+
+    success "Codex CLI installed"
 }
 
 install_claude_cli() {
@@ -287,7 +301,7 @@ collect_tokens() {
     echo "  - Telegram Bot Token (from @BotFather)"
     echo "  - Your Telegram ID (from @userinfobot)"
     echo "  - Deepgram API Key (from console.deepgram.com)"
-    echo "  - Todoist API Token (from Todoist Settings > Integrations > Developer)"
+    echo "  - Singularity API Token (from me.singularity-app.com > API Access)"
     echo ""
 
     # Telegram Bot Token
@@ -326,15 +340,15 @@ collect_tokens() {
         fi
     done
 
-    # Todoist API Token
+    # Singularity API Token
     while true; do
-        ask "Todoist API Token (from Settings > Integrations > Developer):"
-        read -r TODOIST_API_KEY
-        if validate_todoist_key "$TODOIST_API_KEY"; then
+        ask "Singularity API Token (from API Access):"
+        read -r SINGULARITY_ACCESS_TOKEN
+        if validate_singularity_token "$SINGULARITY_ACCESS_TOKEN"; then
             success "API Token format valid"
             break
         else
-            error "Invalid API token format. Should be alphanumeric, 30+ characters"
+            error "Invalid API token format. Should look like UUID"
         fi
     done
 }
@@ -360,8 +374,8 @@ TELEGRAM_BOT_TOKEN=$TELEGRAM_BOT_TOKEN
 # Deepgram API key for voice transcription
 DEEPGRAM_API_KEY=$DEEPGRAM_API_KEY
 
-# Todoist API key for task management
-TODOIST_API_KEY=$TODOIST_API_KEY
+# Singularity API token for task management
+SINGULARITY_ACCESS_TOKEN=$SINGULARITY_ACCESS_TOKEN
 
 # Path to Obsidian vault directory
 VAULT_PATH=./vault
@@ -383,6 +397,27 @@ install_dependencies() {
     "$HOME/.local/bin/uv" sync
 
     success "Dependencies installed"
+}
+
+extract_singularity_mcp() {
+    step "Preparing Singularity MCP bundle"
+
+    cd "$PROJECT_DIR"
+
+    if [ ! -f "singularity-mcp-server-2.0.1.mcpb" ]; then
+        warn "Singularity MCP bundle not found"
+        return
+    fi
+
+    mkdir -p .mcp/singularity
+
+    if [ -f ".mcp/singularity/mcp.js" ]; then
+        success "Singularity MCP bundle already extracted"
+        return
+    fi
+
+    unzip -q "singularity-mcp-server-2.0.1.mcpb" -d ".mcp/singularity"
+    success "Singularity MCP bundle extracted"
 }
 
 configure_systemd() {
@@ -504,11 +539,18 @@ check_status() {
         ERRORS+=("Node.js not found")
     fi
 
+    # Check Codex CLI
+    if check_command codex; then
+        success "Codex CLI: installed"
+    else
+        WARNINGS+=("Codex CLI not found (default AI processing)")
+    fi
+
     # Check Claude CLI
     if check_command claude; then
         success "Claude CLI: installed"
     else
-        WARNINGS+=("Claude CLI not found (needed for AI processing)")
+        WARNINGS+=("Claude CLI not found (optional fallback)")
     fi
 
     # Check .env
@@ -591,6 +633,19 @@ authorize_claude() {
     echo ""
 }
 
+authorize_codex() {
+    step "Codex CLI Authorization"
+
+    warn "Codex CLI needs authorization"
+    echo ""
+    echo "Run this command manually:"
+    echo -e "  ${CYAN}codex login${NC}"
+    echo ""
+    echo "This will open a browser for authentication."
+    echo "After authorizing, the bot will be able to use Codex for AI processing."
+    echo ""
+}
+
 # =============================================================================
 # Main script
 # =============================================================================
@@ -602,7 +657,7 @@ main() {
     check_os
 
     echo "This script will:"
-    echo "  1. Install required software (Python, Node.js, uv, Claude CLI)"
+    echo "  1. Install required software (Python, Node.js, uv, Codex CLI, Claude CLI)"
     echo "  2. Clone your fork of the repository"
     echo "  3. Ask for your API tokens"
     echo "  4. Create configuration files"
@@ -620,6 +675,7 @@ main() {
     install_python
     install_uv
     install_nodejs
+    install_codex_cli
     install_claude_cli
 
     # Configuration
@@ -627,8 +683,10 @@ main() {
     collect_tokens
     create_env_file
     install_dependencies
+    extract_singularity_mcp
     configure_systemd
     configure_git_remote
+    authorize_codex
     authorize_claude
 
     # Final check

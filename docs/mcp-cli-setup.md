@@ -1,5 +1,3 @@
-# MCP через mcp-cli
-
 Стабильное подключение к MCP серверам через mcp-cli вместо прямого протокола.
 
 ## Зачем это нужно
@@ -14,12 +12,12 @@ MCP протокол напрямую иногда отваливается. mcp
 
 ```
 До:
-Claude → MCP Protocol → Todoist MCP Server → Todoist API
-         (отваливается)
+Claude/Codex -> MCP Protocol -> Singularity MCP Server -> Singularity API
+        (отваливается)
 
 После:
-Claude → Bash → mcp-cli → Todoist MCP Server → Todoist API
-                (daemon, retry, pooling)
+Claude/Codex -> Bash -> mcp-cli -> Singularity MCP Server -> Singularity API
+                 (daemon, retry, pooling)
 ```
 
 ---
@@ -45,150 +43,47 @@ mkdir -p ~/.config/mcp
 cat > ~/.config/mcp/mcp_servers.json << 'EOF'
 {
   "mcpServers": {
-    "todoist": {
-      "command": "npx",
-      "args": ["-y", "@doist/todoist-ai"],
-      "env": {
-        "TODOIST_API_KEY": "${TODOIST_API_KEY}"
-      }
+    "singularity": {
+      "command": "bash",
+      "args": [
+        "-lc",
+        "node /path/to/agent-second-brain/.mcp/singularity/mcp.js --baseUrl https://api.singularity-app.com --accessToken \"$SINGULARITY_ACCESS_TOKEN\" -n"
+      ]
     }
   }
 }
 EOF
 ```
 
-### 3. Добавьте токены в shell
+Замените `/path/to/agent-second-brain` на путь к репозиторию.
+
+### 3. Добавьте токен в shell
 
 ```bash
 # Добавить в ~/.bashrc
 echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc
-echo 'export TODOIST_API_KEY="ваш_токен"' >> ~/.bashrc
+echo 'export SINGULARITY_ACCESS_TOKEN="ваш_токен"' >> ~/.bashrc
 source ~/.bashrc
 ```
-
-### 4. Уберите прямое MCP подключение из Claude
-
-```bash
-# Удалить прямое MCP подключение
-claude mcp remove todoist
-```
-
-Проверить что удалено:
-```bash
-claude mcp list
-# todoist НЕ должен быть в списке
-```
-
-Теперь Claude работает через mcp-cli (bash), а не через MCP протокол напрямую.
 
 ---
 
 ## Проверка
 
 ```bash
-# Список инструментов (24 шт)
-mcp-cli info todoist
+# Список инструментов
+mcp-cli info singularity
 
-# Тест - задачи на сегодня
-mcp-cli call todoist find-tasks-by-date '{"startDate": "today"}'
+# Задачи на неделю (пример диапазона дат)
+mcp-cli call singularity listTasks '{"startDateFrom": "2026-01-01", "startDateTo": "2026-01-07"}'
 
-# Обзор всех проектов
-mcp-cli call todoist get-overview '{}'
-```
-
----
-
-## Todoist Tools (24)
-
-### Задачи
-
-| Tool | Описание |
-|------|----------|
-| `add-tasks` | Создать задачи |
-| `update-tasks` | Обновить задачи |
-| `complete-tasks` | Завершить задачи |
-| `find-tasks` | Поиск по тексту/проекту/label |
-| `find-tasks-by-date` | Задачи по дате |
-| `find-completed-tasks` | Завершённые задачи |
-
-### Проекты и секции
-
-| Tool | Описание |
-|------|----------|
-| `add-projects` | Создать проекты |
-| `update-projects` | Обновить проекты |
-| `find-projects` | Поиск проектов |
-| `add-sections` | Создать секции |
-| `update-sections` | Обновить секции |
-| `find-sections` | Секции проекта |
-
-### Комментарии и коллаборация
-
-| Tool | Описание |
-|------|----------|
-| `add-comments` | Добавить комментарии |
-| `update-comments` | Обновить комментарии |
-| `find-comments` | Найти комментарии |
-| `find-project-collaborators` | Участники проекта |
-| `manage-assignments` | Bulk назначение |
-
-### Общее
-
-| Tool | Описание |
-|------|----------|
-| `get-overview` | Обзор (markdown) |
-| `find-activity` | Лог активности |
-| `delete-object` | Удалить объект |
-| `fetch-object` | Получить объект |
-| `user-info` | Инфо о пользователе |
-| `search` | Универсальный поиск |
-| `fetch` | Получить по ID |
-
----
-
-## Примеры команд
-
-### Задачи на сегодня
-```bash
-mcp-cli call todoist find-tasks-by-date '{"startDate": "today"}'
-```
-
-### Создать задачу
-```bash
-mcp-cli call todoist add-tasks '{"tasks": [{"content": "Тест задача", "dueString": "tomorrow", "priority": 2}]}'
-```
-
-### Завершить задачу
-```bash
-mcp-cli call todoist complete-tasks '{"ids": ["task_id_here"]}'
-```
-
-### Поиск задач
-```bash
-mcp-cli call todoist find-tasks '{"searchText": "проект"}'
-```
-
-### Обзор проекта
-```bash
-mcp-cli call todoist get-overview '{"projectId": "project_id"}'
-```
-
-### Найти проекты
-```bash
-mcp-cli call todoist find-projects '{"search": "Work"}'
-```
-
----
-
-## Отладка
-
-```bash
-MCP_DEBUG=1 mcp-cli call todoist find-tasks-by-date '{"startDate": "today"}'
+# Создать задачу
+mcp-cli call singularity createTask '{"task": {"title": "Тест задача", "start": "2026-01-02", "priority": 1}}'
 ```
 
 ---
 
 ## Требования
 
-- Node.js 18+ (для npx)
-- Todoist API Token (Settings → Integrations → Developer)
+- Node.js 18+ (для MCP bundle)
+- Singularity API Token (Pro/Elite)

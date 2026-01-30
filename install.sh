@@ -149,6 +149,19 @@ install_uv() {
 }
 
 #######################################
+# Install Codex CLI
+#######################################
+install_codex() {
+    if has_command codex; then
+        success "Codex already installed: $(codex --version)"
+    else
+        info "Installing Codex CLI..."
+        npm install -g @openai/codex
+        success "Codex CLI installed"
+    fi
+}
+
+#######################################
 # Install Claude Code CLI
 #######################################
 install_claude() {
@@ -255,15 +268,16 @@ collect_tokens() {
         "https://console.deepgram.com/" \
         "DEEPGRAM_API_KEY"
 
-    # Todoist API Token (optional)
+    # Singularity API Token (optional)
     prompt_token \
-        "4/4: Todoist API Token (optional)" \
-        "For task management:
-1. Log in to todoist.com
-2. Settings → Integrations → Developer
-3. Copy the API token" \
-        "https://todoist.com/app/settings/integrations/developer" \
-        "TODOIST_API_KEY" \
+        "4/4: Singularity API Token (optional)" \
+        "For task management (Pro/Elite required):
+1. Open me.singularity-app.com
+2. API Access (REST tokens)
+3. Create token with tasks/projects
+4. Copy the token" \
+        "https://me.singularity-app.com/rest-tokens" \
+        "SINGULARITY_ACCESS_TOKEN" \
         "true"
 }
 
@@ -280,8 +294,8 @@ TELEGRAM_BOT_TOKEN=$TELEGRAM_BOT_TOKEN
 # Deepgram API Key (from console.deepgram.com)
 DEEPGRAM_API_KEY=$DEEPGRAM_API_KEY
 
-# Todoist API Token (optional)
-TODOIST_API_KEY=$TODOIST_API_KEY
+# Singularity API Token (optional)
+SINGULARITY_ACCESS_TOKEN=$SINGULARITY_ACCESS_TOKEN
 
 # Path to vault (don't change)
 VAULT_PATH=./vault
@@ -316,21 +330,44 @@ install_mcp_cli() {
         success "mcp-cli installed"
     fi
 
-    # Configure mcp-cli for Todoist if token provided
-    if [[ -n "$TODOIST_API_KEY" ]]; then
-        info "Configuring mcp-cli for Todoist..."
+    # Configure mcp-cli for Singularity if token provided
+    if [[ -n "$SINGULARITY_ACCESS_TOKEN" ]]; then
+        info "Configuring mcp-cli for Singularity..."
         mkdir -p ~/.config/mcp
         cat > ~/.config/mcp/mcp_servers.json << EOF
 {
   "mcpServers": {
-    "todoist": {
-      "command": "npx",
-      "args": ["-y", "@doist/todoist-ai"],
-      "env": {
-        "TODOIST_API_KEY": "$TODOIST_API_KEY"
-      }
+    "singularity": {
+      "command": "bash",
+      "args": [
+        "-lc",
+        "node $INSTALL_DIR/.mcp/singularity/mcp.js --baseUrl https://api.singularity-app.com --accessToken \"$SINGULARITY_ACCESS_TOKEN\" -n"
+      ]
     }
   }
+}
+
+#######################################
+# Extract Singularity MCP bundle
+#######################################
+extract_singularity_mcp() {
+    local bundle="$INSTALL_DIR/singularity-mcp-server-2.0.1.mcpb"
+    local target="$INSTALL_DIR/.mcp/singularity"
+
+    if [ -f "$target/mcp.js" ]; then
+        success "Singularity MCP bundle already extracted"
+        return
+    fi
+
+    if [ ! -f "$bundle" ]; then
+        warn "Singularity MCP bundle not found: $bundle"
+        return
+    fi
+
+    info "Extracting Singularity MCP bundle..."
+    mkdir -p "$target"
+    python -m zipfile -e "$bundle" "$target"
+    success "Singularity MCP bundle extracted"
 }
 EOF
         success "mcp-cli configured"
@@ -357,6 +394,24 @@ auth_claude() {
         claude auth login
         success "Claude authenticated"
     fi
+}
+
+#######################################
+# Authenticate Codex
+#######################################
+auth_codex() {
+    echo
+    echo -e "${YELLOW}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+    echo -e "${YELLOW}Codex Authentication${NC}"
+    echo "Codex is the default engine. Sign in with ChatGPT or API key."
+    echo -e "${YELLOW}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+    echo
+
+    info "Starting Codex authentication..."
+    echo "A browser window will open. Log in with your OpenAI account."
+    echo
+    codex login
+    success "Codex authenticated"
 }
 
 #######################################
@@ -511,12 +566,15 @@ main() {
     install_homebrew
     install_dependencies
     install_uv
+    install_codex
     install_claude
     clone_repo
     collect_tokens
     create_env
     install_python_deps
+    extract_singularity_mcp
     install_mcp_cli
+    auth_codex
     auth_claude
     setup_autostart
     start_bot

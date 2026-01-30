@@ -152,7 +152,7 @@ def format_process_report(report: dict[str, Any]) -> str:
     We sanitize it to ensure only Telegram-safe tags are used.
 
     Args:
-        report: Processing report from ClaudeProcessor
+        report: Processing report from LLMProcessor
 
     Returns:
         Formatted HTML message for Telegram

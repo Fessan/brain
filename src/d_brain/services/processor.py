@@ -1,25 +1,109 @@
-"""Claude processing service."""
+"""LLM processing service."""
 
 import json
 import logging
 import os
 import subprocess
+import tempfile
 from datetime import date
 from pathlib import Path
 from typing import Any
+
+from d_brain.services.llm_router import LLMProvider
 
 logger = logging.getLogger(__name__)
 
 DEFAULT_TIMEOUT = 1200  # 20 minutes
 
 
-class ClaudeProcessor:
-    """Service for triggering Claude Code processing."""
+class LLMProcessor:
+    """Service for triggering LLM processing via CLI."""
 
-    def __init__(self, vault_path: Path, todoist_api_key: str = "") -> None:
+    def __init__(
+        self,
+        vault_path: Path,
+        singularity_access_token: str = "",
+        provider: LLMProvider = LLMProvider.CODEX,
+    ) -> None:
         self.vault_path = Path(vault_path)
-        self.todoist_api_key = todoist_api_key
+        self.singularity_access_token = singularity_access_token
+        self.provider = provider
         self._mcp_config_path = (self.vault_path.parent / "mcp-config.json").resolve()
+
+    def _cli_label(self) -> str:
+        return "Codex" if self.provider == LLMProvider.CODEX else "Claude"
+
+    def _execute_prompt(self, prompt: str) -> str:
+        if self.provider == LLMProvider.CLAUDE:
+            return self._execute_claude(prompt)
+        return self._execute_codex(prompt)
+
+    def _execute_codex(self, prompt: str) -> str:
+        env = os.environ.copy()
+        if self.singularity_access_token:
+            env["SINGULARITY_ACCESS_TOKEN"] = self.singularity_access_token
+
+        temp_file = tempfile.NamedTemporaryFile(delete=False)
+        output_path = Path(temp_file.name)
+        temp_file.close()
+
+        try:
+            result = subprocess.run(
+                [
+                    "codex",
+                    "exec",
+                    "--dangerously-bypass-approvals-and-sandbox",
+                    "--output-last-message",
+                    str(output_path),
+                    prompt,
+                ],
+                cwd=self.vault_path.parent,
+                capture_output=True,
+                text=True,
+                timeout=DEFAULT_TIMEOUT,
+                check=False,
+                env=env,
+            )
+
+            if result.returncode != 0:
+                raise RuntimeError(result.stderr or "Codex execution failed")
+
+            output = ""
+            if output_path.exists():
+                output = output_path.read_text(encoding="utf-8").strip()
+            if not output:
+                output = result.stdout.strip()
+            return output
+        finally:
+            output_path.unlink(missing_ok=True)
+
+    def _execute_claude(self, prompt: str) -> str:
+        env = os.environ.copy()
+        if self.singularity_access_token:
+            env["SINGULARITY_ACCESS_TOKEN"] = self.singularity_access_token
+
+        result = subprocess.run(
+            [
+                "claude",
+                "--print",
+                "--dangerously-skip-permissions",
+                "--mcp-config",
+                str(self._mcp_config_path),
+                "-p",
+                prompt,
+            ],
+            cwd=self.vault_path.parent,
+            capture_output=True,
+            text=True,
+            timeout=DEFAULT_TIMEOUT,
+            check=False,
+            env=env,
+        )
+
+        if result.returncode != 0:
+            raise RuntimeError(result.stderr or "Claude execution failed")
+
+        return result.stdout.strip()
 
     def _load_skill_content(self) -> str:
         """Load dbrain-processor skill content for inclusion in prompt.
@@ -32,9 +116,11 @@ class ClaudeProcessor:
             return skill_path.read_text()
         return ""
 
-    def _load_todoist_reference(self) -> str:
-        """Load Todoist reference for inclusion in prompt."""
-        ref_path = self.vault_path / ".claude/skills/dbrain-processor/references/todoist.md"
+    def _load_singularity_reference(self) -> str:
+        """Load Singularity reference for inclusion in prompt."""
+        ref_path = (
+            self.vault_path / ".claude/skills/dbrain-processor/references/singularity.md"
+        )
         if ref_path.exists():
             return ref_path.read_text()
         return ""
@@ -97,7 +183,7 @@ week: {year}-W{week:02d}
                 logger.info("Updated MOC-weekly.md with link to %s", summary_path.stem)
 
     def process_daily(self, day: date | None = None) -> dict[str, Any]:
-        """Process daily file with Claude.
+        """Process daily file with the active LLM.
 
         Args:
             day: Date to process (default: today)
@@ -126,12 +212,12 @@ week: {year}-W{week:02d}
 {skill_content}
 === END SKILL ===
 
-ПЕРВЫМ ДЕЛОМ: вызови mcp__todoist__user-info чтобы убедиться что MCP работает.
+ПЕРВЫМ ДЕЛОМ: вызови mcp__singularity__listTasks чтобы убедиться что MCP работает.
 
 CRITICAL MCP RULE:
-- ТЫ ИМЕЕШЬ ДОСТУП к mcp__todoist__* tools — ВЫЗЫВАЙ ИХ НАПРЯМУЮ
+- ТЫ ИМЕЕШЬ ДОСТУП к mcp__singularity__* tools — ВЫЗЫВАЙ ИХ НАПРЯМУЮ
 - НИКОГДА не пиши "MCP недоступен" или "добавь вручную"
-- Для задач: вызови mcp__todoist__add-tasks tool
+- Для задач: вызови mcp__singularity__createTask tool
 - Если tool вернул ошибку — покажи ТОЧНУЮ ошибку в отчёте
 
 CRITICAL OUTPUT FORMAT:
@@ -142,53 +228,21 @@ CRITICAL OUTPUT FORMAT:
 - If entries already processed, return status report in same HTML format"""
 
         try:
-            # Pass TODOIST_API_KEY to Claude subprocess
-            env = os.environ.copy()
-            if self.todoist_api_key:
-                env["TODOIST_API_KEY"] = self.todoist_api_key
-
-            result = subprocess.run(
-                [
-                    "claude",
-                    "--print",
-                    "--dangerously-skip-permissions",
-                    "--mcp-config",
-                    str(self._mcp_config_path),
-                    "-p",
-                    prompt,
-                ],
-                cwd=self.vault_path.parent,
-                capture_output=True,
-                text=True,
-                timeout=DEFAULT_TIMEOUT,
-                check=False,
-                env=env,
-            )
-
-            if result.returncode != 0:
-                logger.error("Claude processing failed: %s", result.stderr)
-                return {
-                    "error": result.stderr or "Claude processing failed",
-                    "processed_entries": 0,
-                }
-
-            # Return human-readable output
-            output = result.stdout.strip()
+            output = self._execute_prompt(prompt)
             return {
                 "report": output,
                 "processed_entries": 1,  # успешно обработано
             }
-
         except subprocess.TimeoutExpired:
-            logger.error("Claude processing timed out")
+            logger.error("Processing timed out")
             return {
                 "error": "Processing timed out",
                 "processed_entries": 0,
             }
         except FileNotFoundError:
-            logger.error("Claude CLI not found")
+            logger.error("%s CLI not found", self._cli_label())
             return {
-                "error": "Claude CLI not installed",
+                "error": f"{self._cli_label()} CLI not installed",
                 "processed_entries": 0,
             }
         except Exception as e:
@@ -199,7 +253,7 @@ CRITICAL OUTPUT FORMAT:
             }
 
     def execute_prompt(self, user_prompt: str) -> dict[str, Any]:
-        """Execute arbitrary prompt with Claude.
+        """Execute arbitrary prompt with the active LLM.
 
         Args:
             user_prompt: User's natural language request
@@ -209,8 +263,8 @@ CRITICAL OUTPUT FORMAT:
         """
         today = date.today()
 
-        # Load todoist reference for task operations
-        todoist_ref = self._load_todoist_reference()
+        # Load Singularity reference for task operations
+        singularity_ref = self._load_singularity_reference()
 
         prompt = f"""Ты - персональный ассистент d-brain.
 
@@ -218,14 +272,14 @@ CONTEXT:
 - Текущая дата: {today}
 - Vault path: {self.vault_path}
 
-=== TODOIST REFERENCE ===
-{todoist_ref}
+=== SINGULARITY REFERENCE ===
+{singularity_ref}
 === END REFERENCE ===
 
-ПЕРВЫМ ДЕЛОМ: вызови mcp__todoist__user-info чтобы убедиться что MCP работает.
+ПЕРВЫМ ДЕЛОМ: вызови mcp__singularity__listTasks чтобы убедиться что MCP работает.
 
 CRITICAL MCP RULE:
-- ТЫ ИМЕЕШЬ ДОСТУП к mcp__todoist__* tools — ВЫЗЫВАЙ ИХ НАПРЯМУЮ
+- ТЫ ИМЕЕШЬ ДОСТУП к mcp__singularity__* tools — ВЫЗЫВАЙ ИХ НАПРЯМУЮ
 - НИКОГДА не пиши "MCP недоступен" или "добавь вручную"
 - Если tool вернул ошибку — покажи ТОЧНУЮ ошибку в отчёте
 
@@ -241,56 +295,30 @@ CRITICAL OUTPUT FORMAT:
 
 EXECUTION:
 1. Analyze the request
-2. Call MCP tools directly (mcp__todoist__*, read/write files)
+2. Call MCP tools directly (mcp__singularity__*, read/write files)
 3. Return HTML status report with results"""
 
         try:
-            env = os.environ.copy()
-            if self.todoist_api_key:
-                env["TODOIST_API_KEY"] = self.todoist_api_key
-
-            result = subprocess.run(
-                [
-                    "claude",
-                    "--print",
-                    "--dangerously-skip-permissions",
-                    "--mcp-config",
-                    str(self._mcp_config_path),
-                    "-p",
-                    prompt,
-                ],
-                cwd=self.vault_path.parent,
-                capture_output=True,
-                text=True,
-                timeout=DEFAULT_TIMEOUT,
-                check=False,
-                env=env,
-            )
-
-            if result.returncode != 0:
-                logger.error("Claude execution failed: %s", result.stderr)
-                return {
-                    "error": result.stderr or "Claude execution failed",
-                    "processed_entries": 0,
-                }
-
+            output = self._execute_prompt(prompt)
             return {
-                "report": result.stdout.strip(),
+                "report": output,
                 "processed_entries": 1,
             }
-
         except subprocess.TimeoutExpired:
-            logger.error("Claude execution timed out")
+            logger.error("Execution timed out")
             return {"error": "Execution timed out", "processed_entries": 0}
         except FileNotFoundError:
-            logger.error("Claude CLI not found")
-            return {"error": "Claude CLI not installed", "processed_entries": 0}
+            logger.error("%s CLI not found", self._cli_label())
+            return {
+                "error": f"{self._cli_label()} CLI not installed",
+                "processed_entries": 0,
+            }
         except Exception as e:
             logger.exception("Unexpected error during execution")
             return {"error": str(e), "processed_entries": 0}
 
     def generate_weekly(self) -> dict[str, Any]:
-        """Generate weekly digest with Claude.
+        """Generate weekly digest with the active LLM.
 
         Returns:
             Weekly digest report as dict
@@ -299,16 +327,16 @@ EXECUTION:
 
         prompt = f"""Сегодня {today}. Сгенерируй недельный дайджест.
 
-ПЕРВЫМ ДЕЛОМ: вызови mcp__todoist__user-info чтобы убедиться что MCP работает.
+ПЕРВЫМ ДЕЛОМ: вызови mcp__singularity__listTasks чтобы убедиться что MCP работает.
 
 CRITICAL MCP RULE:
-- ТЫ ИМЕЕШЬ ДОСТУП к mcp__todoist__* tools — ВЫЗЫВАЙ ИХ НАПРЯМУЮ
+- ТЫ ИМЕЕШЬ ДОСТУП к mcp__singularity__* tools — ВЫЗЫВАЙ ИХ НАПРЯМУЮ
 - НИКОГДА не пиши "MCP недоступен" или "добавь вручную"
-- Для выполненных задач: вызови mcp__todoist__find-completed-tasks tool
+- Для задач недели: используй mcp__singularity__listTasks с диапазоном дат
 - Если tool вернул ошибку — покажи ТОЧНУЮ ошибку в отчёте
 
 WORKFLOW:
-1. Собери данные за неделю (daily файлы в vault/daily/, completed tasks через MCP)
+1. Собери данные за неделю (daily файлы в vault/daily/, задачи через MCP)
 2. Проанализируй прогресс по целям (goals/3-weekly.md)
 3. Определи победы и вызовы
 4. Сгенерируй HTML отчёт
@@ -321,36 +349,7 @@ CRITICAL OUTPUT FORMAT:
 - Be concise - Telegram has 4096 char limit"""
 
         try:
-            env = os.environ.copy()
-            if self.todoist_api_key:
-                env["TODOIST_API_KEY"] = self.todoist_api_key
-
-            result = subprocess.run(
-                [
-                    "claude",
-                    "--print",
-                    "--dangerously-skip-permissions",
-                    "--mcp-config",
-                    str(self._mcp_config_path),
-                    "-p",
-                    prompt,
-                ],
-                cwd=self.vault_path.parent,
-                capture_output=True,
-                text=True,
-                timeout=DEFAULT_TIMEOUT,
-                check=False,
-                env=env,
-            )
-
-            if result.returncode != 0:
-                logger.error("Weekly digest failed: %s", result.stderr)
-                return {
-                    "error": result.stderr or "Weekly digest failed",
-                    "processed_entries": 0,
-                }
-
-            output = result.stdout.strip()
+            output = self._execute_prompt(prompt)
 
             # Save to summaries/ and update MOC
             try:
@@ -368,8 +367,11 @@ CRITICAL OUTPUT FORMAT:
             logger.error("Weekly digest timed out")
             return {"error": "Weekly digest timed out", "processed_entries": 0}
         except FileNotFoundError:
-            logger.error("Claude CLI not found")
-            return {"error": "Claude CLI not installed", "processed_entries": 0}
+            logger.error("%s CLI not found", self._cli_label())
+            return {
+                "error": f"{self._cli_label()} CLI not installed",
+                "processed_entries": 0,
+            }
         except Exception as e:
             logger.exception("Unexpected error during weekly digest")
             return {"error": str(e), "processed_entries": 0}

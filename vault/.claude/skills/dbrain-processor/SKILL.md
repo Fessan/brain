@@ -1,11 +1,11 @@
 ---
 name: second-brain-processor
-description: Personal assistant for processing daily voice/text entries from Telegram. Classifies content, creates Todoist tasks aligned with goals, saves thoughts to Obsidian with wiki-links, generates HTML reports. Triggers on /process command or daily 21:00 cron.
+description: Personal assistant for processing daily voice/text entries from Telegram. Classifies content, creates Singularity tasks aligned with goals, saves thoughts to Obsidian with wiki-links, generates HTML reports. Triggers on /process command or daily 21:00 cron.
 ---
 
 # Second Brain Processor
 
-Process daily entries → tasks (Todoist) + thoughts (Obsidian) + HTML report (Telegram).
+Process daily entries → tasks (Singularity) + thoughts (Obsidian) + HTML report (Telegram).
 
 ## CRITICAL: Output Format
 
@@ -29,20 +29,20 @@ CORRECT:
 
 ## MCP Tools Required
 
-mcp__todoist__add-tasks — Create tasks
-mcp__todoist__find-tasks — Check duplicates
-mcp__todoist__find-tasks-by-date — Check workload
+mcp__singularity__createTask — Create tasks
+mcp__singularity__listTasks — Check duplicates/workload
 
 ## CRITICAL: MCP Tool Usage
 
 **НИКАКИХ WORKAROUNDS. НИКАКИХ "добавь вручную". ТОЛЬКО ПРЯМЫЕ ВЫЗОВЫ.**
 
 У тебя ЕСТЬ доступ к MCP tools:
-- `mcp__todoist__add-tasks`
-- `mcp__todoist__find-tasks`
-- `mcp__todoist__find-tasks-by-date`
-- `mcp__todoist__complete-tasks`
-- `mcp__todoist__update-tasks`
+- `mcp__singularity__createTask`
+- `mcp__singularity__listTasks`
+- `mcp__singularity__updateTask`
+- `mcp__singularity__deleteTask`
+- `mcp__singularity__getTask`
+- `mcp__singularity__listProjects`
 
 ЗАПРЕЩЕНО:
 - Писать "MCP недоступен"
@@ -52,7 +52,7 @@ mcp__todoist__find-tasks-by-date — Check workload
 - Выводить команды для копирования
 
 ОБЯЗАТЕЛЬНО:
-- Вызывать `mcp__todoist__add-tasks` tool напрямую
+- Вызывать `mcp__singularity__createTask` tool напрямую
 - Если tool вернул ошибку — включить её в отчёт
 - Если task создан — включить task ID в отчёт
 
@@ -61,7 +61,7 @@ mcp__todoist__find-tasks-by-date — Check workload
 ## Processing Flow
 
 1. Load context — Read goals/3-weekly.md (ONE Big Thing), goals/2-monthly.md
-2. Check workload — find-tasks-by-date for 7 days
+2. Check workload — listTasks with 7-day date range
 3. Read daily — daily/YYYY-MM-DD.md
 4. Process entries — Classify → task or thought
 5. Build links — Connect notes with [[wiki-links]]
@@ -76,15 +76,16 @@ Types: [voice], [text], [forward from: Name], [photo]
 
 ## Classification
 
-task → Todoist (see references/todoist.md)
+task → Singularity (see references/singularity.md)
 idea/reflection/learning → thoughts/ (see references/classification.md)
 
 ## Priority Rules
 
-p1 — Client deadline, urgent
-p2 — Aligns with ONE Big Thing or monthly priority
-p3 — Aligns with yearly goal
-p4 — Operational, no goal alignment
+Singularity uses numeric priorities:
+
+0 — Client deadline, urgent
+1 — Aligns with ONE Big Thing or monthly/yearly priority
+2 — Operational, no goal alignment
 
 ## Thought Categories
 
@@ -175,7 +176,7 @@ Max length: 4096 characters.
 Read these files as needed:
 - references/about.md — User profile, decision filters
 - references/classification.md — Entry classification rules
-- references/todoist.md — Task creation details
+- references/singularity.md — Task creation details
 - references/goals.md — Goal alignment logic
 - references/links.md — Wiki-links building
 - references/rules.md — Mandatory processing rules

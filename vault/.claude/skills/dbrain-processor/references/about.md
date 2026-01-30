@@ -86,8 +86,8 @@ Context → Insight → Implication → Next Action
 ```
 
 ### Prioritization
-- **Urgent**: [what counts as urgent] → p1-p2
-- **Strategic**: [what counts as strategic] → p3-p4
+- **Urgent**: [what counts as urgent] → priority 0-1
+- **Strategic**: [what counts as strategic] → priority 1-2
 
 ## Anti-Patterns (AVOID)
 

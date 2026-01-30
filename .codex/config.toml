@@ -1,0 +1,4 @@
+[mcp_servers.singularity]
+command = "bash"
+args = ["-lc", "node .mcp/singularity/mcp.js --baseUrl https://api.singularity-app.com --accessToken \"$SINGULARITY_ACCESS_TOKEN\" -n"]
+env_vars = ["SINGULARITY_ACCESS_TOKEN"]
